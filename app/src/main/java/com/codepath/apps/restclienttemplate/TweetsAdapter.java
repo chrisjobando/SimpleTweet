@@ -13,6 +13,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.codepath.apps.restclienttemplate.models.Tweet;
 
+import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
+
 import java.util.List;
 
 import javax.annotation.Nonnull;
@@ -70,18 +72,30 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
         ImageView ivProfileImage;
         TextView tvBody;
         TextView tvScreenName;
+        TextView tvRetweets;
+        TextView tvFavorites;
+        TextView tvTime;
 
         public ViewHolder(@Nonnull View itemView) {
             super(itemView);
             ivProfileImage = itemView.findViewById(R.id.ivProfileImage);
             tvBody = itemView.findViewById(R.id.tvBody);
             tvScreenName = itemView.findViewById(R.id.tvScreenName);
+            tvRetweets = itemView.findViewById(R.id.tvRetweets);
+            tvFavorites = itemView.findViewById(R.id.tvFavorites);
+            tvTime = itemView.findViewById(R.id.tvTime);
+
         }
 
         public void bind(Tweet tweet) {
             tvBody.setText(tweet.body);
-            tvScreenName.setText(tweet.user.screenName);
-            Glide.with(context).load(tweet.user.profileImageUrl).into(ivProfileImage);
+            tvScreenName.setText(tweet.user.name);
+            tvRetweets.setText(tweet.retweetCount);
+            tvFavorites.setText(tweet.favoriteCount);
+            tvTime.setText(tweet.time);
+
+            Glide.with(context).load(tweet.user.profileImageUrl)
+            .transform(new RoundedCornersTransformation(100, 0)).into(ivProfileImage);
         }
     }
 }

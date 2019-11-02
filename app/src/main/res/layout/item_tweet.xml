@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="5dp">
+    android:background="#2b3743">
 
     <ImageView
         android:id="@+id/ivProfileImage"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="0dp"
-        android:layout_marginTop="0dp"
-        android:contentDescription="Profile Image"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="15dp"
+        android:contentDescription="@string/profile_image"
         tools:srcCompat="@tools:sample/avatars" />
 
     <TextView
@@ -21,18 +22,98 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="5dp"
-        android:layout_marginTop="0dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="20dp"
         android:layout_toEndOf="@+id/ivProfileImage"
-        android:text="childshbandino" />
+        android:maxLength="25"
+        android:text="@string/display_name"
+        android:textColor="#ffffff"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/ivProfileImage"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="10dp"
+        android:background="@layout/relativelayout_radius_border">
+
+        <TextView
+            android:id="@+id/tvBody"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginBottom="15dp"
+            android:fontFamily="sans-serif-thin"
+            android:text="@string/tweet_body"
+            android:textColor="#9eb3c7" />
+
+        <ImageView
+            android:id="@+id/ivRetweet"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_below="@+id/tvBody"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="15dp"
+            android:contentDescription="@string/retweets"
+            android:tint="#9eb3c7"
+            app:srcCompat="@drawable/ic_retweet" />
+
+        <ImageView
+            android:id="@+id/ivFavorite"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_below="@+id/tvBody"
+            android:layout_marginStart="150dp"
+            android:layout_marginTop="13dp"
+            android:layout_marginBottom="10dp"
+            android:contentDescription="@string/favorites"
+            android:tint="#9eb3c7"
+            app:srcCompat="@drawable/ic_heart" />
+
+        <TextView
+            android:id="@+id/tvRetweets"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvBody"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="15dp"
+            android:layout_toEndOf="@+id/ivRetweet"
+            android:fontFamily="sans-serif-thin"
+            android:text="@string/retweets"
+            android:textColor="#9eb3c7"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/tvFavorites"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvBody"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="15dp"
+            android:layout_toEndOf="@+id/ivFavorite"
+            android:fontFamily="sans-serif-thin"
+            android:text="@string/favorites"
+            android:textColor="#9eb3c7"
+            android:textSize="12sp" />
+
+    </RelativeLayout>
 
     <TextView
-        android:id="@+id/tvBody"
+        android:id="@+id/tvTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tvScreenName"
-        android:layout_marginStart="5dp"
-        android:layout_marginTop="2dp"
-        android:layout_toEndOf="@+id/ivProfileImage"
-        android:text="This is my tweet!" />
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="23dp"
+        android:layout_marginEnd="30dp"
+        android:fontFamily="sans-serif-light"
+        android:text="@string/time"
+        android:textColor="#9eb3c7" />
 </RelativeLayout>
