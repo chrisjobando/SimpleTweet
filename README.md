@@ -4,7 +4,7 @@
 
 Submitted by: **Christopher Obando**
 
-Time spent: 2 hours spent in total
+Time spent: 5 hours spent in total
 
 ## User Stories
 
@@ -43,7 +43,7 @@ GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
 ## Notes
 
-Describe any challenges encountered while building the app.
+Wish I could implement the rest of the stretch stories, I will definitely try to over the weekend!
 
 ## Open-source libraries used
 
