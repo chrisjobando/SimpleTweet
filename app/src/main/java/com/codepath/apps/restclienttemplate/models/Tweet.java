@@ -1,32 +1,49 @@
 package com.codepath.apps.restclienttemplate.models;
 
+import android.util.Log;
+
 import com.codepath.apps.restclienttemplate.TimeFormatter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.parceler.Parcel;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Parcel
 public class Tweet {
+    String createdAt;
     public String body;
-    public String createdAt;
     public long id;
     public User user;
     public String retweetCount;
     public String favoriteCount;
     public String time;
+    public String mediaUrl;
+    public String mediaType;
+    public boolean hasLinks;
+    public boolean hasHashTags;
+    public boolean retweeted;
+    public boolean favorited;
+    public boolean hasMedia;
+
+    public Tweet() {}
 
     public static Tweet fromJson(JSONObject jsonObject) throws JSONException {
         Tweet tweet = new Tweet();
         tweet.id = jsonObject.getLong("id");
-        tweet.body = jsonObject.getString("text");
+        tweet.body = jsonObject.getString("full_text");
         tweet.createdAt = jsonObject.getString("created_at");
         tweet.user = User.fromJson(jsonObject.getJSONObject("user"));
+        tweet.retweeted = jsonObject.getBoolean("retweeted");
+        tweet.favorited = jsonObject.getBoolean("favorited");
+
 
         int retweets = jsonObject.getInt("retweet_count");
         int favorites = jsonObject.getInt("favorite_count");
+
         String createdAt = jsonObject.getString("created_at");
         tweet.time = TimeFormatter.getTimeDifference(createdAt);
 
@@ -45,6 +62,22 @@ public class Tweet {
             favorites /= 1000;
             tweet.favoriteCount = favorites + "K";
         }
+
+        JSONObject entities = jsonObject.getJSONObject("entities");
+        tweet.hasHashTags = entities.getJSONArray("hashtags").length() != 0;
+        tweet.hasLinks = entities.getJSONArray("urls").length() != 0;
+
+        try {
+            tweet.mediaType = entities.getJSONArray("media").getJSONObject(0)
+                    .getString("type");
+            tweet.mediaUrl = entities.getJSONArray("media").getJSONObject(0)
+                    .getString("media_url_https");
+            tweet.hasMedia = true;
+        } catch (JSONException e) {
+            tweet.hasMedia = false;
+        }
+
+
 
         return tweet;
     }

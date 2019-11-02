@@ -2,9 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/tweetContainer"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:background="#2b3743">
 
     <ImageView
@@ -63,13 +62,15 @@
             android:layout_marginEnd="15dp"
             android:fontFamily="sans-serif-thin"
             android:text="@string/tweet_body"
+            android:autoLink="all"
+            android:clickable="false"
             android:textColor="#9eb3c7" />
 
         <ImageView
             android:id="@+id/ivRetweet"
             android:layout_width="25dp"
             android:layout_height="25dp"
-            android:layout_below="@+id/tvBody"
+            android:layout_below="@+id/ivMedia"
             android:layout_marginStart="15dp"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="15dp"
@@ -81,7 +82,7 @@
             android:id="@+id/ivFavorite"
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:layout_below="@+id/tvBody"
+            android:layout_below="@+id/ivMedia"
             android:layout_marginStart="150dp"
             android:layout_marginTop="13dp"
             android:layout_marginBottom="10dp"
@@ -93,7 +94,7 @@
             android:id="@+id/ivReply"
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:layout_below="@+id/tvBody"
+            android:layout_below="@+id/ivMedia"
             android:layout_marginStart="285dp"
             android:layout_marginTop="13dp"
             android:layout_marginBottom="10dp"
@@ -105,7 +106,7 @@
             android:id="@+id/tvRetweets"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/tvBody"
+            android:layout_below="@+id/ivMedia"
             android:layout_marginStart="10dp"
             android:layout_marginTop="15dp"
             android:layout_toEndOf="@+id/ivRetweet"
@@ -118,7 +119,7 @@
             android:id="@+id/tvFavorites"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/tvBody"
+            android:layout_below="@+id/ivMedia"
             android:layout_marginStart="10dp"
             android:layout_marginTop="15dp"
             android:layout_toEndOf="@+id/ivFavorite"
@@ -126,6 +127,16 @@
             android:text="@string/favorites"
             android:textColor="#9eb3c7"
             android:textSize="12sp" />
+
+        <ImageView
+            android:id="@+id/ivMedia"
+            android:layout_centerInParent="true"
+            android:gravity="center_vertical"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:layout_below="@+id/tvBody"
+            android:layout_marginTop="10dp"
+            tools:srcCompat="@tools:sample/avatars" />
 
     </RelativeLayout>
 

@@ -8,7 +8,7 @@
     <string name="profile_image">Profile Image</string>
     <string name="display_name">Display Name</string>
     <string name="tweet_body">Tweet Body</string>
-    <string name="retweets">100K</string>
-    <string name="favorites">100K</string>
+    <string name="retweets">1K</string>
+    <string name="favorites">1K</string>
     <string name="time">1m</string>
 </resources>

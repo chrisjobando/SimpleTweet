@@ -1,23 +1,36 @@
 package com.codepath.apps.restclienttemplate;
 
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Color;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.codepath.apps.restclienttemplate.models.Tweet;
+import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
+import okhttp3.Headers;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.annotation.Nonnull;
+
+import org.parceler.Parcels;
 
 public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder> {
 
@@ -69,33 +82,203 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
 
     // Define a ViewHolder
     public class ViewHolder extends RecyclerView.ViewHolder {
+        RelativeLayout container;
         ImageView ivProfileImage;
-        TextView tvBody;
+        TextView tvTime;
         TextView tvScreenName;
+        TextView tvBody;
+
+        ImageView ivRetweet;
+        ImageView ivFavorite;
         TextView tvRetweets;
         TextView tvFavorites;
-        TextView tvTime;
+
+        boolean favorited;
+        boolean retweeted;
 
         public ViewHolder(@Nonnull View itemView) {
             super(itemView);
+            container = itemView.findViewById(R.id.tweetContainer);
             ivProfileImage = itemView.findViewById(R.id.ivProfileImage);
+            tvTime = itemView.findViewById(R.id.tvTime);
             tvBody = itemView.findViewById(R.id.tvBody);
             tvScreenName = itemView.findViewById(R.id.tvScreenName);
+            ivRetweet = itemView.findViewById(R.id.ivRetweet);
             tvRetweets = itemView.findViewById(R.id.tvRetweets);
+            ivFavorite = itemView.findViewById(R.id.ivFavorite);
             tvFavorites = itemView.findViewById(R.id.tvFavorites);
-            tvTime = itemView.findViewById(R.id.tvTime);
-
         }
 
-        public void bind(Tweet tweet) {
-            tvBody.setText(tweet.body);
+        public void bind(final Tweet tweet) {
+            favorited = tweet.favorited;
+            retweeted = tweet.retweeted;
+
             tvScreenName.setText(tweet.user.name);
+            tvTime.setText(tweet.time);
             tvRetweets.setText(tweet.retweetCount);
             tvFavorites.setText(tweet.favoriteCount);
-            tvTime.setText(tweet.time);
+
+            SpannableString body = new SpannableString(tweet.body);
+
+            if (tweet.hasLinks || tweet.hasMedia) {
+                Matcher matcher = Pattern.compile("((https?|ftp|gopher|telnet|file|Unsure|http):((//)|(\\\\))+[\\w\\d:#@%/;$()~_?\\+-=\\\\\\.&]*)", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE).matcher(body);
+                while(matcher.find()) {
+                    body.setSpan(new ForegroundColorSpan(
+                                    Color.parseColor("#13b0ee")), matcher.start(),
+                            matcher.end(), 0);
+                }
+            }
+
+            if (tweet.hasHashTags) {
+                Matcher matcher = Pattern.compile("#([A-Za-z0-9_-]+)").matcher(body);
+                while (matcher.find()) {
+                    body.setSpan(new ForegroundColorSpan(
+                            Color.parseColor("#13b0ee")), matcher.start(),
+                            matcher.end(), 0);
+                }
+            }
+
+            tvBody.setText(body);
+
+            if (retweeted) {
+                DrawableCompat.setTint(ivRetweet.getDrawable(), Color.WHITE);
+            }
+            if (favorited) {
+                DrawableCompat.setTint(ivFavorite.getDrawable(), Color.WHITE);
+            }
+
+            ivRetweet.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    TwitterClient client = TwitterApp.getRestClient(context);
+
+                    if (!retweeted) {
+                        DrawableCompat.setTint(ivRetweet.getDrawable(), Color.WHITE);
+                        client.retweetTweet(new JsonHttpResponseHandler() {
+                            @Override
+                            public void onSuccess(int statusCode, Headers headers, JSON json) {
+                                Log.i("TweetsAdapter", "onSuccess for retweeting");
+                                try {
+                                    int num = Integer.parseInt(tvRetweets.getText().toString());
+                                    if (num < 1000) {
+                                        tvRetweets.setText(String.valueOf(++num));
+                                    } else {
+                                        tvRetweets.setText(context.getResources()
+                                                .getString(R.string.retweets));
+                                    }
+                                } catch (NumberFormatException e) {
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(int statusCode, Headers headers, String response,
+                                                  Throwable throwable) {
+                                Log.e("TweetsAdapter", "onFailure for retweeting");
+                            }
+                        }, tweet.id);
+                    } else {
+                        DrawableCompat.setTint(ivRetweet.getDrawable(),
+                                Color.parseColor("#9eb3c7"));
+                        client.unretweetTweet(new JsonHttpResponseHandler() {
+                            @Override
+                            public void onSuccess(int statusCode, Headers headers, JSON json) {
+                                Log.i("TweetsAdapter", "onSuccess for unretweeting");
+                                try {
+                                    int num = Integer.parseInt(tvRetweets.getText().toString());
+                                    if (num < 1000) {
+                                        tvRetweets.setText(String.valueOf(--num));
+                                    } else {
+                                        tvRetweets.setText(context.getResources()
+                                                .getString(R.string.retweets));
+                                    }
+                                } catch (NumberFormatException e) {
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(int statusCode, Headers headers, String response,
+                                                  Throwable throwable) {
+                                Log.e("TweetsAdapter", "onFailure for unretweeting");
+                            }
+                        }, tweet.id);
+                    }
+                    retweeted = !retweeted;
+                }
+            });
+
+            ivFavorite.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    TwitterClient client = TwitterApp.getRestClient(context);
+
+                    if (!favorited) {
+                        DrawableCompat.setTint(ivFavorite.getDrawable(), Color.WHITE);
+                        client.favoriteTweet(new JsonHttpResponseHandler() {
+                            @Override
+                            public void onSuccess(int statusCode, Headers headers, JSON json) {
+                                Log.i("TweetsAdapter", "onSuccess for favoriting");
+                                try {
+                                    int num = Integer.parseInt(tvFavorites.getText().toString());
+                                    if (num < 1000) {
+                                        tvFavorites.setText(String.valueOf(++num));
+                                    } else {
+                                        tvFavorites.setText(context.getResources()
+                                                .getString(R.string.favorites));
+                                    }
+                                } catch (NumberFormatException e) {
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(int statusCode, Headers headers, String response,
+                                                  Throwable throwable) {
+                                Log.e("TweetsAdapter", "onFailure for favoriting");
+                            }
+                        }, tweet.id);
+                    } else {
+                        DrawableCompat.setTint(ivFavorite.getDrawable(),
+                                Color.parseColor("#9eb3c7"));
+                        client.unfavoriteTweet(new JsonHttpResponseHandler() {
+                            @Override
+                            public void onSuccess(int statusCode, Headers headers, JSON json) {
+                                Log.i("TweetsAdapter", "onSuccess for unfavoriting");
+                                try {
+                                    int num = Integer.parseInt(tvFavorites.getText().toString());
+                                    if (num < 1000) {
+                                        tvFavorites.setText(String.valueOf(--num));
+                                    } else {
+                                        tvFavorites.setText(context.getResources()
+                                                .getString(R.string.favorites));
+                                    }
+                                } catch (NumberFormatException e) {
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(int statusCode, Headers headers, String response,
+                                                  Throwable throwable) {
+                                Log.e("TweetsAdapter", "onFailure for unfavoriting");
+                            }
+                        }, tweet.id);
+                    }
+                    favorited = !favorited;
+                }
+            });
 
             Glide.with(context).load(tweet.user.profileImageUrl)
-            .transform(new RoundedCornersTransformation(100, 0)).into(ivProfileImage);
+            .transform(new RoundedCornersTransformation(100, 0))
+            .into(ivProfileImage);
+
+
+            container.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent i = new Intent(context, TweetDetailActivity.class);
+                    i.putExtra("tweet", Parcels.wrap(tweet));
+                    context.startActivity(i);
+
+                }
+            });
         }
     }
 }
