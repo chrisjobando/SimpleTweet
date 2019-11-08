@@ -86,6 +86,7 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
         ImageView ivProfileImage;
         TextView tvTime;
         TextView tvScreenName;
+        ImageView ivVerify;
         TextView tvBody;
 
         ImageView ivRetweet;
@@ -103,6 +104,7 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
             tvTime = itemView.findViewById(R.id.tvTime);
             tvBody = itemView.findViewById(R.id.tvBody);
             tvScreenName = itemView.findViewById(R.id.tvScreenName);
+            ivVerify = itemView.findViewById(R.id.ivVerify);
             ivRetweet = itemView.findViewById(R.id.ivRetweet);
             tvRetweets = itemView.findViewById(R.id.tvRetweets);
             ivFavorite = itemView.findViewById(R.id.ivFavorite);
@@ -120,8 +122,14 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
 
             SpannableString body = new SpannableString(tweet.body);
 
+            if (tweet.user.verified) {
+                ivVerify.setVisibility(View.VISIBLE);
+            } else {
+                ivVerify.setVisibility(View.INVISIBLE);
+            }
+
             if (tweet.hasLinks || tweet.hasMedia) {
-                Matcher matcher = Pattern.compile("((https?|ftp|gopher|telnet|file|Unsure|http):((//)|(\\\\))+[\\w\\d:#@%/;$()~_?\\+-=\\\\\\.&]*)", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE).matcher(body);
+                Matcher matcher = Pattern.compile("((https?|ftp|gopher|telnet|file|Unsure|http):((//)|(\\\\))+[\\w\\d:#@%/;$()~_?\\+-=\\\\\\.&]*)", Pattern.CASE_INSENSITIVE).matcher(body);
                 while(matcher.find()) {
                     body.setSpan(new ForegroundColorSpan(
                                     Color.parseColor("#13b0ee")), matcher.start(),
@@ -134,6 +142,15 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
                 while (matcher.find()) {
                     body.setSpan(new ForegroundColorSpan(
                             Color.parseColor("#13b0ee")), matcher.start(),
+                            matcher.end(), 0);
+                }
+            }
+
+            if (tweet.hasMentions) {
+                Matcher matcher = Pattern.compile("@([A-Za-z0-9_-]+)").matcher(body);
+                while (matcher.find()) {
+                    body.setSpan(new ForegroundColorSpan(
+                                    Color.parseColor("#13b0ee")), matcher.start(),
                             matcher.end(), 0);
                 }
             }

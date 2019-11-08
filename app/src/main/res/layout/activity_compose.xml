@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#2b3743"
+    tools:context=".ComposeActivity">
+
+    <EditText
+        android:id="@+id/etCompose"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="20dp"
+        android:background="@layout/relativelayout_radius_border"
+        android:ems="10"
+        android:gravity="start|top"
+        android:hint="@string/compose_hint"
+        android:inputType="textMultiLine"
+        android:minLines="5"
+        android:padding="10dp"
+        android:paddingTop="10dp"
+        android:textColor="#ffffff"
+        android:textColorHint="#9eb3c7"
+        tools:layout_editor_absoluteX="67dp"
+        tools:layout_editor_absoluteY="171dp" />
+
+    <Button
+        android:id="@+id/btnTweet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/etCompose"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="25dp"
+        android:background="@layout/relativelayout_radius_buttonborder"
+        android:text="@string/tweetBtn"
+        android:textColor="#313e4c" />
+</RelativeLayout>

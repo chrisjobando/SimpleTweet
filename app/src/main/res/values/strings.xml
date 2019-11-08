@@ -11,4 +11,6 @@
     <string name="retweets">1K</string>
     <string name="favorites">1K</string>
     <string name="time">1m</string>
+    <string name="compose_hint">What\'\s happening?</string>
+    <string name="tweetBtn">Tweet</string>
 </resources>

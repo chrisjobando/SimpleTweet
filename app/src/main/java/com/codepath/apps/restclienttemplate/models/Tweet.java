@@ -22,19 +22,26 @@ public class Tweet {
     public String favoriteCount;
     public String time;
     public String mediaUrl;
+    public int mediaH;
+    public int mediaW;
     public String mediaType;
     public boolean hasLinks;
     public boolean hasHashTags;
     public boolean retweeted;
     public boolean favorited;
     public boolean hasMedia;
+    public boolean hasMentions;
 
     public Tweet() {}
 
     public static Tweet fromJson(JSONObject jsonObject) throws JSONException {
         Tweet tweet = new Tweet();
         tweet.id = jsonObject.getLong("id");
-        tweet.body = jsonObject.getString("full_text");
+        try {
+            tweet.body = jsonObject.getString("full_text");
+        } catch(JSONException e) {
+            tweet.body = jsonObject.getString("text");
+        }
         tweet.createdAt = jsonObject.getString("created_at");
         tweet.user = User.fromJson(jsonObject.getJSONObject("user"));
         tweet.retweeted = jsonObject.getBoolean("retweeted");
@@ -66,12 +73,17 @@ public class Tweet {
         JSONObject entities = jsonObject.getJSONObject("entities");
         tweet.hasHashTags = entities.getJSONArray("hashtags").length() != 0;
         tweet.hasLinks = entities.getJSONArray("urls").length() != 0;
+        tweet.hasMentions = entities.getJSONArray("user_mentions").length() != 0;
 
         try {
             tweet.mediaType = entities.getJSONArray("media").getJSONObject(0)
                     .getString("type");
             tweet.mediaUrl = entities.getJSONArray("media").getJSONObject(0)
                     .getString("media_url_https");
+            tweet.mediaH = entities.getJSONArray("media").getJSONObject(0)
+                    .getJSONObject("sizes").getJSONObject("small").getInt("h");
+            tweet.mediaW = entities.getJSONArray("media").getJSONObject(0)
+                    .getJSONObject("sizes").getJSONObject("small").getInt("w");
             tweet.hasMedia = true;
         } catch (JSONException e) {
             tweet.hasMedia = false;

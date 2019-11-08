@@ -23,7 +23,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="10dp"
+        android:layout_marginStart="20dp"
         android:layout_marginTop="20dp"
         android:layout_toEndOf="@+id/ivProfileImage"
         android:maxLength="25"
@@ -43,6 +43,15 @@
         android:fontFamily="sans-serif-light"
         android:text="@string/time"
         android:textColor="#9eb3c7" />
+
+    <ImageView
+        android:id="@+id/ivVerify"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:layout_marginStart="57.5dp"
+        android:layout_marginTop="27.5dp"
+        android:visibility="invisible"
+        app:srcCompat="@drawable/ic_correct" />
 
     <RelativeLayout
         android:layout_width="match_parent"

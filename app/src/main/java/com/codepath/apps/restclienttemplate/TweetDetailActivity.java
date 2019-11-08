@@ -29,6 +29,7 @@ public class TweetDetailActivity extends AppCompatActivity {
     ImageView ivProfileImage;
     TextView tvTime;
     TextView tvScreenName;
+    ImageView ivVerify;
     TextView tvBody;
     ImageView ivMedia;
 
@@ -54,6 +55,7 @@ public class TweetDetailActivity extends AppCompatActivity {
         tvBody = findViewById(R.id.tvBody);
         ivMedia = findViewById(R.id.ivMedia);
         tvScreenName = findViewById(R.id.tvScreenName);
+        ivVerify = findViewById(R.id.ivVerify);
         ivRetweet = findViewById(R.id.ivRetweet);
         tvRetweets = findViewById(R.id.tvRetweets);
         ivFavorite = findViewById(R.id.ivFavorite);
@@ -63,6 +65,12 @@ public class TweetDetailActivity extends AppCompatActivity {
         tvTime.setText(tweet.time);
         tvRetweets.setText(tweet.retweetCount);
         tvFavorites.setText(tweet.favoriteCount);
+
+        if (tweet.user.verified) {
+            ivVerify.setVisibility(View.VISIBLE);
+        } else {
+            ivVerify.setVisibility(View.INVISIBLE);
+        }
 
         SpannableString body = new SpannableString(tweet.body);
 
@@ -76,11 +84,23 @@ public class TweetDetailActivity extends AppCompatActivity {
         }
 
         if (tweet.hasMedia) {
+            ivMedia.setVisibility(View.VISIBLE);
             DrawableImageViewTarget ivTarget = new DrawableImageViewTarget(ivMedia);
-            Glide.with(this).load(tweet.mediaUrl)
-                .fitCenter()
-                .transform(new RoundedCornersTransformation(50, 0))
+            Glide.with(this)
+                .load(tweet.mediaUrl)
+                .override(tweet.mediaW, tweet.mediaH)
+                .centerCrop()
+                .transform(new RoundedCornersTransformation(30, 30))
                 .into(ivTarget);
+        }
+
+        if (tweet.hasMentions) {
+            Matcher matcher = Pattern.compile("@([A-Za-z0-9_-]+)").matcher(body);
+            while (matcher.find()) {
+                body.setSpan(new ForegroundColorSpan(
+                                Color.parseColor("#13b0ee")), matcher.start(),
+                        matcher.end(), 0);
+            }
         }
 
         if (tweet.hasHashTags) {
@@ -220,7 +240,7 @@ public class TweetDetailActivity extends AppCompatActivity {
         });
 
         Glide.with(getApplicationContext()).load(tweet.user.profileImageUrl)
-                .transform(new RoundedCornersTransformation(100, 0))
-                .into(ivProfileImage);
+            .transform(new RoundedCornersTransformation(100, 0))
+            .into(ivProfileImage);
     }
 }
