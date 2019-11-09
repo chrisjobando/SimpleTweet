@@ -13,4 +13,5 @@
     <string name="time">1m</string>
     <string name="compose_hint">What\'\s happening?</string>
     <string name="tweetBtn">Tweet</string>
+    <string name="char_count">280</string>
 </resources>
